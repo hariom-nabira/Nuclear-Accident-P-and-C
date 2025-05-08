@@ -1,0 +1,4 @@
+preprocessing, documentation, logs, models, etc should be in different folders
+every script should generate logs in the logs folder
+every script should have a corresponding working.md file in documentation folder
+always keep requirements.txt and Readme.md updated
