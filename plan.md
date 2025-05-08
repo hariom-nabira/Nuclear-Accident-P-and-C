@@ -47,16 +47,17 @@ This system aims to predict and classify nuclear power plant accidents using tim
 ### Directory Structure
 ```
 SEM-PROJECT/
-├── NPPAD/
-│   ├── raw/                    # Original dataset
-│   ├── processed/              # Preprocessed data for all models
-│   └── model_specific/         # Model-specific preprocessed data
+├── NPPAD/                      # Original dataset
+├── NPPAD_for_classifiers/      # Dataset for classification models
+├── NPPAD_for_prediction/       # Dataset for prediction models
 ├── models/
 │   ├── classification/
 │   ├── binary_prediction/
 │   └── forecasting/
 ├── preprocessing/
 │   ├── common/
+│   │   ├── classifier_preprocessing.py  # Common preprocessing for classifiers
+│   │   └── prediction_preprocessing.py  # Common preprocessing for prediction
 │   └── model_specific/
 ├── logs/
 ├── documentation/
@@ -66,10 +67,19 @@ SEM-PROJECT/
 ```
 
 ### Common Preprocessing Steps
-1. Data Loading and Validation
-   - Load CSV files and transient reports
-   - Validate data consistency
-   - Handle missing values
+
+#### 1. Classifier-specific Preprocessing
+- Create NPPAD_for_classifiers by cloning NPPAD
+- For each simulation:
+  - Read transient report to find accident timestamp
+  - Drop rows with time > accident_timestamp from corresponding CSV
+  - Save modified CSV in NPPAD_for_classifiers
+- This preprocessing is common to all classification models
+
+#### 2. General Data Loading and Validation
+- Load CSV files and transient reports
+- Validate data consistency
+- Handle missing values
 
 2. Feature Engineering
    - Time-based features
@@ -99,6 +109,8 @@ SEM-PROJECT/
 ### Phase 1: Data Preparation
 1. Set up directory structure
 2. Implement common preprocessing pipeline
+   - Create NPPAD_for_classifiers with accident-based truncation
+   - Create NPPAD_for_prediction for prediction models
 3. Create model-specific preprocessing if needed
 
 ### Phase 2: Model Development

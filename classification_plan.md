@@ -63,13 +63,19 @@ Dense Layer (12 units, Softmax)
 
 ## Preprocessing Pipeline
 
-### 1. Data Loading and Preparation
-- Load CSV files from all accident types
-- Load corresponding transient reports
-- Align time series data with event timestamps
+### 1. Common Classifier Preprocessing
+- Use NPPAD_for_classifiers dataset
+- This dataset has been preprocessed to:
+  - Remove data after accident timestamp
+  - Maintain consistent structure across all simulations
+  - Preserve original data in NPPAD
+
+### 2. Data Loading and Preparation
+- Load preprocessed CSV files from NPPAD_for_classifiers
+- Load corresponding transient reports for additional metadata
 - Create balanced dataset across accident types
 
-### 2. Feature Engineering
+### 3. Feature Engineering
 - Time window features (e.g., 30-second windows)
 - Statistical features per window:
   - Mean, std, min, max
@@ -83,13 +89,13 @@ Dense Layer (12 units, Softmax)
   - Pressure differentials
   - Flow rate variations
 
-### 3. Data Splitting
+### 4. Data Splitting
 - Stratified split by accident type
 - 70% training
 - 15% validation
 - 15% testing
 
-### 4. Data Normalization
+### 5. Data Normalization
 - Min-Max scaling for ML models
 - Standard scaling for DL model
 
@@ -127,7 +133,7 @@ Dense Layer (12 units, Softmax)
 ## Implementation Steps
 
 1. Data Preparation
-   - Create preprocessing scripts
+   - Use common classifier preprocessing (NPPAD_for_classifiers)
    - Generate feature engineering pipeline
    - Create data loaders
 
