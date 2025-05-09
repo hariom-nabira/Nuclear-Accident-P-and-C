@@ -6,6 +6,9 @@ import logging
 from datetime import datetime
 from tqdm import tqdm
 
+# Create logs directory if it doesn't exist
+os.makedirs('logs', exist_ok=True)
+
 # Set up logging
 logging.basicConfig(
     level=logging.INFO,
@@ -142,7 +145,7 @@ def main():
     output_dir = "NPPAD_for_classifiers_features"
     
     # Initialize feature engineer
-    engineer = FeatureEngineer(window_size=30)
+    engineer = FeatureEngineer(window_size=5)
     
     # Process dataset
     engineer.process_dataset(input_dir, output_dir)
