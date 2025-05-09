@@ -7,6 +7,7 @@ from sklearn.svm import SVC
 from xgboost import XGBClassifier
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
+from sklearn.preprocessing import LabelEncoder
 import joblib
 import logging
 from datetime import datetime
@@ -37,6 +38,7 @@ class MLModelTrainer:
         }
         self.best_models = {}
         self.accident_types = []
+        self.label_encoder = LabelEncoder()
         
     def load_data(self):
         """Load and prepare data for training."""
@@ -64,7 +66,11 @@ class MLModelTrainer:
                 X.append(df.iloc[-1].values)
                 y.append(accident_type)
         
-        return np.array(X), np.array(y)
+        # Encode labels
+        y_encoded = self.label_encoder.fit_transform(y)
+        logging.info(f"Class mapping: {dict(zip(self.label_encoder.classes_, self.label_encoder.transform(self.label_encoder.classes_)))}")
+        
+        return np.array(X), y_encoded
     
     def train_models(self, X, y):
         """Train all ML models with hyperparameter tuning."""
@@ -120,17 +126,21 @@ class MLModelTrainer:
             # Evaluate on test set
             y_pred = grid_search.predict(X_test)
             
+            # Convert predictions back to original labels for reporting
+            y_test_original = self.label_encoder.inverse_transform(y_test)
+            y_pred_original = self.label_encoder.inverse_transform(y_pred)
+            
             # Log results
             logging.info(f"\nBest parameters for {model_name}:")
             logging.info(grid_search.best_params_)
             logging.info(f"\nTest accuracy: {accuracy_score(y_test, y_pred):.4f}")
             logging.info("\nClassification Report:")
-            logging.info(classification_report(y_test, y_pred))
+            logging.info(classification_report(y_test_original, y_pred_original))
             logging.info("\nConfusion Matrix:")
-            logging.info(confusion_matrix(y_test, y_pred))
+            logging.info(confusion_matrix(y_test_original, y_pred_original))
     
     def save_models(self, output_dir="models/classification/saved_models"):
-        """Save trained models."""
+        """Save trained models and label encoder."""
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
             
@@ -138,6 +148,11 @@ class MLModelTrainer:
             model_path = os.path.join(output_dir, f"{model_name}.joblib")
             joblib.dump(model, model_path)
             logging.info(f"Saved {model_name} to {model_path}")
+        
+        # Save label encoder
+        encoder_path = os.path.join(output_dir, "label_encoder.joblib")
+        joblib.dump(self.label_encoder, encoder_path)
+        logging.info(f"Saved label encoder to {encoder_path}")
     
     def run(self):
         """Run the complete training pipeline."""
