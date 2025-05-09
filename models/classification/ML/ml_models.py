@@ -272,7 +272,6 @@ class MLModelTrainer:
         # Train models
         self.train_models(X, y)
         
-        # Save models
         self.save_models()
         
         logging.info("Training completed!")
