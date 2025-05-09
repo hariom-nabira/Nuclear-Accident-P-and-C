@@ -70,7 +70,7 @@ def standardize_csv(file_path, common_columns):
 
 def main():
     # Get all CSV files from parent directory
-    base_dir = '..'  # Parent directory
+    base_dir = 'NPPAD'  # Parent directory
     csv_files = get_all_csv_files(base_dir)
     logging.info(f"Found {len(csv_files)} CSV files")
     
