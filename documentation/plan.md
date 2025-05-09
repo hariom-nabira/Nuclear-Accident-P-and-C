@@ -48,21 +48,26 @@ This system aims to predict and classify nuclear power plant accidents using tim
 ```
 SEM-PROJECT/
 ├── NPPAD/                      # Original dataset
-├── NPPAD_for_classifiers/      # Dataset for classification models
-├── NPPAD_for_prediction/       # Dataset for prediction models
+├── NPPAD_for_classifiers/      # Dataset for classification models (rows till accident timestamp)
+├── NPPAD_for_prediction/       # Dataset for prediction models (all rows, also binary label per row)
 ├── models/
 │   ├── classification/
+│   │   ├── ML/
+│   │   ├── DL/
 │   ├── binary_prediction/
 │   └── forecasting/
 ├── preprocessing/
-│   ├── common/
+│   ├── classification/
 │   │   ├── classifier_preprocessing.py  # Common preprocessing for classifiers
+│   │   ├── classification_ML_feature_engineering.py
+│   ├── prediction/
 │   │   └── prediction_preprocessing.py  # Common preprocessing for prediction
-│   └── model_specific/
+│   └── forecasting/
 ├── logs/
 ├── documentation/
-│   ├── working/
-│   └── model_specific/
+│   ├── classification/
+│   ├── binary_prediction/
+│   └── forecasting/
 └── requirements.txt
 ```
 

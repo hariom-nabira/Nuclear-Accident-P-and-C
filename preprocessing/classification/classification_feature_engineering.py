@@ -6,6 +6,9 @@ import logging
 from datetime import datetime
 from tqdm import tqdm
 
+# Create logs directory if it doesn't exist
+os.makedirs('logs', exist_ok=True)
+
 # Set up logging
 logging.basicConfig(
     level=logging.INFO,
