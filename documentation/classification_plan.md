@@ -83,11 +83,6 @@ Dense Layer (12 units, Softmax)
   - Rate of change
   - Peak detection
   - Trend analysis
-- Domain-specific features:
-  - Reactor power level changes
-  - Temperature gradients
-  - Pressure differentials
-  - Flow rate variations
 
 ### 4. Data Splitting
 - Stratified split by accident type
