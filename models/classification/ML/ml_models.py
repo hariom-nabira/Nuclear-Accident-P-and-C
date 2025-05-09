@@ -17,11 +17,15 @@ import seaborn as sns
 from itertools import cycle
 
 # Set up logging
+current_dir = os.path.dirname(os.path.abspath(__file__))
+log_dir = os.path.join(current_dir, 'logs')
+os.makedirs(log_dir, exist_ok=True)
+
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler(f'logs/ml_models_{datetime.now().strftime("%Y%m%d_%H%M%S")}.log'),
+        logging.FileHandler(os.path.join(log_dir, f'ml_models_{datetime.now().strftime("%Y%m%d_%H%M%S")}.log')),
         logging.StreamHandler()
     ]
 )
@@ -32,7 +36,11 @@ class MLModelTrainer:
         Initialize ML model trainer.
         data_dir: directory containing feature-engineered data
         """
-        self.data_dir = data_dir
+        # Get the project root directory (3 levels up from the current file)
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        project_root = os.path.dirname(os.path.dirname(os.path.dirname(current_dir)))
+        self.data_dir = os.path.join(project_root, data_dir)
+        
         self.models = {
             'random_forest': RandomForestClassifier(random_state=42),
             'knn': KNeighborsClassifier(),
@@ -152,7 +160,8 @@ class MLModelTrainer:
         )
         
         # Create output directory for visualizations
-        output_dir = "models/classification/ML/visualizations"
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        output_dir = os.path.join(current_dir, "visualizations")
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
         
@@ -236,8 +245,12 @@ class MLModelTrainer:
             logging.info("\nConfusion Matrix:")
             logging.info(confusion_matrix(y_test_original, y_pred_original))
     
-    def save_models(self, output_dir="models/classification/ML/saved_models"):
+    def save_models(self, output_dir=None):
         """Save trained models and label encoder."""
+        if output_dir is None:
+            current_dir = os.path.dirname(os.path.abspath(__file__))
+            output_dir = os.path.join(current_dir, "saved_models")
+            
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
             
