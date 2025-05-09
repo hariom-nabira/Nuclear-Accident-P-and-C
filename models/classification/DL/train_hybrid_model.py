@@ -1,13 +1,14 @@
 import os
 import numpy as np
 import pandas as pd
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import KFold
 import tensorflow as tf
 from hybrid_lstm_gru import HybridLSTMGRU
 import logging
 from datetime import datetime
 import matplotlib.pyplot as plt
 import seaborn as sns
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 
 # Create necessary directories
 base_dir = os.path.dirname(os.path.abspath(__file__))  # models/classification/DL
@@ -30,20 +31,21 @@ logging.basicConfig(
     ]
 )
 
-def plot_training_history(history, save_dir):
+def plot_training_history(history, save_dir, fold):
     """
-    Plot and save training history
+    Plot and save training history for each fold
     
     Args:
         history: Training history object
         save_dir: Directory to save plots
+        fold: Current fold number
     """
     # Plot accuracy
     plt.figure(figsize=(12, 4))
     plt.subplot(1, 2, 1)
     plt.plot(history.history['accuracy'], label='Training Accuracy')
     plt.plot(history.history['val_accuracy'], label='Validation Accuracy')
-    plt.title('Model Accuracy')
+    plt.title(f'Model Accuracy - Fold {fold}')
     plt.xlabel('Epoch')
     plt.ylabel('Accuracy')
     plt.legend()
@@ -52,28 +54,26 @@ def plot_training_history(history, save_dir):
     plt.subplot(1, 2, 2)
     plt.plot(history.history['loss'], label='Training Loss')
     plt.plot(history.history['val_loss'], label='Validation Loss')
-    plt.title('Model Loss')
+    plt.title(f'Model Loss - Fold {fold}')
     plt.xlabel('Epoch')
     plt.ylabel('Loss')
     plt.legend()
     
     # Save plot
     plt.tight_layout()
-    plt.savefig(os.path.join(save_dir, f'training_history_{datetime.now().strftime("%Y%m%d_%H%M%S")}.png'))
+    plt.savefig(os.path.join(save_dir, f'training_history_fold_{fold}_{datetime.now().strftime("%Y%m%d_%H%M%S")}.png'))
     plt.close()
 
-def plot_confusion_matrix(y_true, y_pred, save_dir):
+def plot_confusion_matrix(y_true, y_pred, save_dir, fold):
     """
-    Plot and save confusion matrix
+    Plot and save confusion matrix for each fold
     
     Args:
         y_true: True labels
         y_pred: Predicted labels
         save_dir: Directory to save plot
+        fold: Current fold number
     """
-    from sklearn.metrics import confusion_matrix
-    import seaborn as sns
-    
     # Convert one-hot encoded predictions to class labels
     y_true_labels = np.argmax(y_true, axis=1)
     y_pred_labels = np.argmax(y_pred, axis=1)
@@ -84,13 +84,13 @@ def plot_confusion_matrix(y_true, y_pred, save_dir):
     # Plot confusion matrix
     plt.figure(figsize=(10, 8))
     sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
-    plt.title('Confusion Matrix')
+    plt.title(f'Confusion Matrix - Fold {fold}')
     plt.xlabel('Predicted Label')
     plt.ylabel('True Label')
     
     # Save plot
     plt.tight_layout()
-    plt.savefig(os.path.join(save_dir, f'confusion_matrix_{datetime.now().strftime("%Y%m%d_%H%M%S")}.png'))
+    plt.savefig(os.path.join(save_dir, f'confusion_matrix_fold_{fold}_{datetime.now().strftime("%Y%m%d_%H%M%S")}.png'))
     plt.close()
 
 def load_preprocessed_data(data_dir):
@@ -149,50 +149,107 @@ def main():
     data_dir = 'NPPAD_for_classifiers_dl'
     X, y, unique_labels = load_preprocessed_data(data_dir)
     
-    # Split data into train, validation, and test sets
-    X_train, X_temp, y_train, y_temp = train_test_split(X, y, test_size=0.3, random_state=42)
-    X_val, X_test, y_val, y_test = train_test_split(X_temp, y_temp, test_size=0.5, random_state=42)
+    # Initialize K-fold cross-validation
+    n_splits = 5
+    kfold = KFold(n_splits=n_splits, shuffle=True, random_state=42)
     
-    logging.info(f"Data split - Train: {X_train.shape}, Val: {X_val.shape}, Test: {X_test.shape}")
+    # Store results for each fold
+    fold_accuracies = []
+    fold_histories = []
+    all_predictions = []
+    all_true_labels = []
     
-    # Initialize and train model
-    input_shape = (X_train.shape[1], X_train.shape[2])  # (time_steps, features)
-    model = HybridLSTMGRU(input_shape=input_shape, num_classes=y.shape[1])
+    logging.info(f"\nStarting {n_splits}-fold Cross-validation Training")
+    logging.info(f"Total samples: {X.shape[0]}")
+    logging.info(f"Features shape: {X.shape[1:]}")
+
+    # Perform K-fold cross-validation
+    for fold, (train_idx, val_idx) in enumerate(kfold.split(X), 1):
+        logging.info(f"\n{'='*50}")
+        logging.info(f"Training Fold {fold}/{n_splits}")
+        logging.info(f"Training samples: {len(train_idx)}")
+        logging.info(f"Validation samples: {len(val_idx)}")
+        logging.info(f"{'='*50}\n")
+        
+        # Split data for this fold
+        X_train, X_val = X[train_idx], X[val_idx]
+        y_train, y_val = y[train_idx], y[val_idx]
+        
+        # Initialize and train model
+        input_shape = (X_train.shape[1], X_train.shape[2])
+        model = HybridLSTMGRU(input_shape=input_shape, num_classes=y.shape[1])
+        
+        # Train model
+        history = model.train(
+            X_train, y_train,
+            X_val, y_val,
+            batch_size=32,
+            epochs=50
+        )
+        
+        # Plot training history for this fold
+        plot_training_history(history, visualizations_dir, fold)
+        
+        # Evaluate model
+        test_loss, test_accuracy = model.evaluate(X_val, y_val)
+        fold_accuracies.append(test_accuracy)
+        fold_histories.append(history.history)
+        
+        logging.info(f"\nFold {fold} Results:")
+        logging.info(f"Validation Accuracy: {test_accuracy:.4f}")
+        logging.info(f"Validation Loss: {test_loss:.4f}")
+        
+        # Get predictions
+        y_pred = model.predict(X_val)
+        all_predictions.extend(y_pred)
+        all_true_labels.extend(y_val)
+        
+        # Plot confusion matrix for this fold
+        plot_confusion_matrix(y_val, y_pred, visualizations_dir, fold)
+        
+        # Save model for this fold
+        model_save_path = os.path.join(saved_models_dir, f'hybrid_lstm_gru_model_fold_{fold}_{datetime.now().strftime("%Y%m%d_%H%M%S")}.h5')
+        model.save_model(model_save_path)
+        
+        # Save fold metadata
+        metadata = {
+            'fold': fold,
+            'input_shape': input_shape,
+            'num_classes': y.shape[1],
+            'class_labels': unique_labels.tolist(),
+            'test_accuracy': float(test_accuracy),
+            'test_loss': float(test_loss)
+        }
+        
+        import json
+        with open(os.path.join(saved_models_dir, f'model_metadata_fold_{fold}.json'), 'w') as f:
+            json.dump(metadata, f, indent=4)
     
-    # Train model
-    history = model.train(
-        X_train, y_train,
-        X_val, y_val,
-        batch_size=32,
-        epochs=100
+    # Calculate and log overall results
+    mean_accuracy = np.mean(fold_accuracies)
+    std_accuracy = np.std(fold_accuracies)
+    
+    logging.info(f"\n{'='*50}")
+    logging.info("K-fold Cross-validation Final Results:")
+    logging.info(f"Mean Accuracy: {mean_accuracy:.4f} ± {std_accuracy:.4f}")
+    logging.info(f"Individual Fold Accuracies: {[f'{acc:.4f}' for acc in fold_accuracies]}")
+    logging.info(f"{'='*50}\n")
+    
+    # Plot overall confusion matrix
+    plot_confusion_matrix(
+        np.array(all_true_labels),
+        np.array(all_predictions),
+        visualizations_dir,
+        'overall'
     )
     
-    # Plot training history
-    plot_training_history(history, visualizations_dir)
+    # Generate and save classification report
+    y_true_labels = np.argmax(all_true_labels, axis=1)
+    y_pred_labels = np.argmax(all_predictions, axis=1)
+    report = classification_report(y_true_labels, y_pred_labels, target_names=unique_labels)
     
-    # Evaluate model
-    test_loss, test_accuracy = model.evaluate(X_test, y_test)
-    
-    # Get predictions for confusion matrix
-    y_pred = model.predict(X_test)
-    plot_confusion_matrix(y_test, y_pred, visualizations_dir)
-    
-    # Save model
-    model_save_path = os.path.join(saved_models_dir, f'hybrid_lstm_gru_model_{datetime.now().strftime("%Y%m%d_%H%M%S")}.h5')
-    model.save_model(model_save_path)
-    
-    # Save model metadata
-    metadata = {
-        'input_shape': input_shape,
-        'num_classes': y.shape[1],
-        'class_labels': unique_labels.tolist(),
-        'test_accuracy': float(test_accuracy),
-        'test_loss': float(test_loss)
-    }
-    
-    import json
-    with open(os.path.join(saved_models_dir, 'model_metadata.json'), 'w') as f:
-        json.dump(metadata, f, indent=4)
+    with open(os.path.join(log_dir, 'classification_report.txt'), 'w') as f:
+        f.write(report)
     
     logging.info("Training completed successfully")
 

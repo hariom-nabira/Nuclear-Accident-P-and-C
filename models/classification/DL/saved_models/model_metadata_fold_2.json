@@ -1,0 +1,24 @@
+{
+    "fold": 2,
+    "input_shape": [
+        100,
+        96
+    ],
+    "num_classes": 12,
+    "class_labels": [
+        "FLB",
+        "LLB",
+        "LOCA",
+        "LOCAC",
+        "LR",
+        "MD",
+        "RI",
+        "RW",
+        "SGATR",
+        "SGBTR",
+        "SLBIC",
+        "SLBOC"
+    ],
+    "test_accuracy": 0.8884297609329224,
+    "test_loss": 0.30370402336120605
+}
