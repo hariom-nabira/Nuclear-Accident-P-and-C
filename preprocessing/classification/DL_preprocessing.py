@@ -1,230 +1,132 @@
 import os
-import numpy as np
 import pandas as pd
+import numpy as np
 from sklearn.preprocessing import StandardScaler
 import logging
 from datetime import datetime
 from tqdm import tqdm
+import joblib
+
+# Create logs directory if it doesn't exist
+os.makedirs('logs', exist_ok=True)
 
 # Set up logging
-log_dir = os.path.join('logs', 'preprocessing', 'classification', 'DL')
-os.makedirs(log_dir, exist_ok=True)
-log_file = os.path.join(log_dir, f'dl_preprocessing_{datetime.now().strftime("%Y%m%d_%H%M%S")}.log')
-
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler(log_file),
+        logging.FileHandler(f'logs/dl_preprocessing_{datetime.now().strftime("%Y%m%d_%H%M%S")}.log'),
         logging.StreamHandler()
     ]
 )
 
 class DLPreprocessor:
-    def __init__(self, window_size=5): #50 sec
+    def __init__(self, sequence_length=100):  # 1000 seconds (100 * 10s intervals)
         """
-        Initialize the DL preprocessor
-        
-        Args:
-            window_size (int): Size of the time window for feature engineering
+        Initialize DL preprocessor with sequence length.
+        sequence_length: number of time steps to consider for each sequence
         """
-        self.window_size = window_size
+        self.sequence_length = sequence_length
         self.scaler = StandardScaler()
-        logging.info(f"Initialized DL preprocessor with window size: {window_size}")
-
-    def _calculate_statistical_features(self, data):
-        """
-        Calculate statistical features for a time window
+        self.feature_names = None
         
-        Args:
-            data (np.array): Time series data for a window
+    def prepare_sequence(self, df):
+        """Prepare a sequence of fixed length from the time series data."""
+        # Exclude time column
+        df = df.drop('TIME', axis=1)
+        
+        # If sequence is longer than required, take the last sequence_length rows
+        if len(df) > self.sequence_length:
+            df = df.iloc[-self.sequence_length:]
+        # If sequence is shorter, pad with the first row
+        elif len(df) < self.sequence_length:
+            padding = pd.DataFrame([df.iloc[0]] * (self.sequence_length - len(df)))
+            df = pd.concat([padding, df], ignore_index=True)
             
-        Returns:
-            np.array: Statistical features
-        """
-        data = data.drop('TIME', axis=1)
-        features = []
-        for col in range(data.shape[1]):
-            window = data[:, col]
-            features.extend([
-                np.mean(window),
-                np.std(window),
-                np.min(window),
-                np.max(window),
-                np.median(window),
-                np.percentile(window, 25),  # Q1
-                np.percentile(window, 75),  # Q3
-                np.max(np.abs(np.diff(window))),  # Max rate of change
-                np.mean(np.abs(np.diff(window))),  # Mean rate of change
-                np.std(np.diff(window))  # Std of rate of change
-            ])
-        return np.array(features)
-
-    def _calculate_derivatives(self, data):
-        """
-        Calculate first and second derivatives
-        
-        Args:
-            data (np.array): Time series data
+        return df
+    
+    def standardize_features(self, df, fit=False):
+        """Standardize features using StandardScaler."""
+        # Check for any remaining NaN values
+        if df.isna().any().any():
+            logging.warning("NaN values found in features before standardization. Filling with 0.")
+            df = df.fillna(0)
             
-        Returns:
-            tuple: First and second derivatives
-        """
-        first_derivative = np.diff(data, axis=0)
-        second_derivative = np.diff(first_derivative, axis=0)
-        return first_derivative, second_derivative
-
-    def _detect_peaks(self, data, threshold=0.1):
-        """
-        Detect peaks in the time series
+        if fit:
+            standardized_data = self.scaler.fit_transform(df)
+            self.feature_names = df.columns
+        else:
+            standardized_data = self.scaler.transform(df)
         
-        Args:
-            data (np.array): Time series data
-            threshold (float): Threshold for peak detection
+        return pd.DataFrame(standardized_data, columns=df.columns)
+    
+    def process_simulation(self, csv_path, output_dir):
+        """Process a single simulation file."""
+        try:
+            # Read CSV file
+            df = pd.read_csv(csv_path)
             
-        Returns:
-            np.array: Peak indicators
-        """
-        peaks = np.zeros_like(data)
-        for col in range(data.shape[1]):
-            series = data[:, col]
-            for i in range(1, len(series)-1):
-                if series[i] > series[i-1] and series[i] > series[i+1] and \
-                   series[i] > np.mean(series) + threshold * np.std(series):
-                    peaks[i, col] = 1
-        return peaks
-
-    def _analyze_trend(self, data):
-        """
-        Analyze trend in the time series
-        
-        Args:
-            data (np.array): Time series data
+            # Prepare sequence
+            sequence = self.prepare_sequence(df)
             
-        Returns:
-            np.array: Trend indicators
-        """
-        trends = np.zeros_like(data)
-        for col in range(data.shape[1]):
-            series = data[:, col]
-            # Calculate moving average
-            ma = pd.Series(series).rolling(window=5).mean().fillna(method='bfill')
-            # Calculate trend (1 for increasing, -1 for decreasing, 0 for stable)
-            diff = np.diff(ma)
-            trends[:-1, col] = np.sign(diff)
-        return trends
-
-    def preprocess_simulation(self, df):
-        """
-        Preprocess a single simulation
-        
-        Args:
-            df (pd.DataFrame): Raw simulation data
+            # Standardize features
+            standardized_sequence = self.standardize_features(sequence, fit=True)
             
-        Returns:
-            np.array: Preprocessed features
-        """
-        # Convert to numpy array
-        data = df.values
-        
-        # Initialize list to store features
-        all_features = []
-        
-        # Process data in windows
-        for i in range(0, len(data) - self.window_size + 1):
-            window = data[i:i + self.window_size]
+            # Save processed data
+            output_path = os.path.join(output_dir, os.path.basename(csv_path))
+            standardized_sequence.to_csv(output_path, index=False)
             
-            # Calculate features
-            statistical_features = self._calculate_statistical_features(window)
-            first_der, second_der = self._calculate_derivatives(window)
-            peaks = self._detect_peaks(window)
-            trends = self._analyze_trend(window)
+            logging.info(f"Successfully processed {csv_path}")
+            return True
             
-            # Combine all features
-            window_features = np.concatenate([
-                statistical_features,
-                first_der[-1].flatten(),  # Use last point of first derivative
-                second_der[-1].flatten(),  # Use last point of second derivative
-                peaks[-1].flatten(),  # Use last point of peaks
-                trends[-1].flatten()  # Use last point of trends
-            ])
-            
-            all_features.append(window_features)
-        
-        return np.array(all_features)
-
-    def preprocess_dataset(self, data_dir):
-        """
-        Preprocess the entire dataset
-        
-        Args:
-            data_dir (str): Directory containing the preprocessed data
-            
-        Returns:
-            tuple: (X, y) where X is the features array and y is the labels array
-        """
-        logging.info("Starting dataset preprocessing")
-        
-        X = []  # List to store features
-        y = []  # List to store labels
-        
-        # Map accident types to indices
-        accident_types = sorted(os.listdir(data_dir))
-        accident_to_idx = {acc: idx for idx, acc in enumerate(accident_types)}
+        except Exception as e:
+            logging.error(f"Error processing {csv_path}: {str(e)}")
+            return False
+    
+    def process_dataset(self, input_dir, output_dir):
+        """Process all simulations in the dataset."""
+        # Create output directory if it doesn't exist
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
         
         # Process each accident type
-        for accident_type in tqdm(accident_types, desc="Processing accident types"):
-            accident_path = os.path.join(data_dir, accident_type)
-            if os.path.isdir(accident_path):
-                # Process each simulation
-                for simulation in tqdm(os.listdir(accident_path), desc=f"Processing {accident_type}"):
-                    if simulation.endswith('.csv'):
-                        file_path = os.path.join(accident_path, simulation)
-                        try:
-                            # Load simulation data
-                            df = pd.read_csv(file_path)
-                            
-                            # Preprocess simulation
-                            features = self.preprocess_simulation(df)
-                            
-                            X.append(features)
-                            y.extend([accident_to_idx[accident_type]] * len(features))
-                            
-                        except Exception as e:
-                            logging.error(f"Error processing {file_path}: {str(e)}")
-                            continue
+        for accident_type in os.listdir(input_dir):
+            accident_dir = os.path.join(input_dir, accident_type)
+            if not os.path.isdir(accident_dir):
+                continue
+            
+            logging.info(f"Processing accident type: {accident_type}")
+            
+            # Create corresponding directory in output
+            output_accident_dir = os.path.join(output_dir, accident_type)
+            os.makedirs(output_accident_dir, exist_ok=True)
+            
+            # Process each simulation
+            for csv_file in tqdm(os.listdir(accident_dir), desc=f"Processing {accident_type}"):
+                if not csv_file.endswith('.csv'):
+                    continue
+                
+                csv_path = os.path.join(accident_dir, csv_file)
+                self.process_simulation(csv_path, output_accident_dir)
         
-        # Convert to numpy arrays
-        X = np.array(X)
-        y = np.array(y)
+        # Save scaler for later use
+        scaler_path = os.path.join(output_dir, "standard_scaler.joblib")
+        joblib.dump(self.scaler, scaler_path)
+        logging.info(f"Saved standard scaler to {scaler_path}")
         
-        # Reshape X to (samples, time_steps, features)
-        X = X.reshape(-1, X.shape[1], X.shape[2])
-        
-        # Scale features
-        X_reshaped = X.reshape(-1, X.shape[-1])
-        X_scaled = self.scaler.fit_transform(X_reshaped)
-        X = X_scaled.reshape(X.shape)
-        
-        logging.info(f"Preprocessing completed. Final shape: {X.shape}")
-        return X, y
+        logging.info("DL preprocessing completed!")
 
 def main():
+    """Main function to run DL preprocessing."""
+    # Input and output directories
+    input_dir = "NPPAD_for_classifiers"
+    output_dir = "NPPAD_for_classifiers_dl"
+    
     # Initialize preprocessor
-    preprocessor = DLPreprocessor(window_size=5)
+    preprocessor = DLPreprocessor(sequence_length=100)
     
-    # Preprocess dataset
-    data_dir = 'NPPAD_for_classifiers'
-    X, y = preprocessor.preprocess_dataset(data_dir)
-    
-    # Save preprocessed data
-    output_dir = 'preprocessing/classification/DL'
-    os.makedirs(output_dir, exist_ok=True)
-    
-    np.save(os.path.join(output_dir, 'X.npy'), X)
-    np.save(os.path.join(output_dir, 'y.npy'), y)
-    
-    logging.info("Preprocessed data saved successfully")
+    # Process dataset
+    preprocessor.process_dataset(input_dir, output_dir)
 
 if __name__ == "__main__":
     main() 
