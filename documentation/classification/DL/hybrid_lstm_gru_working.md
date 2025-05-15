@@ -1,7 +1,7 @@
 # Hybrid LSTM+GRU Model Documentation
 
 ## Overview
-This document describes the implementation of the Hybrid LSTM+GRU model for nuclear accident classification. The model combines LSTM and GRU layers to capture both long-term and short-term dependencies in the time series data.
+This document describes the implementation of the Hybrid LSTM+GRU model for nuclear accident classification. The model combines bidirectional LSTM and GRU layers with an attention mechanism to capture both long-term and short-term dependencies in the time series data.
 
 ## Model Architecture
 
@@ -9,33 +9,47 @@ This document describes the implementation of the Hybrid LSTM+GRU model for nucl
 1. Input Layer
    - Accepts time series data with shape (time_steps, features)
 
-2. LSTM Layers
-   - First LSTM layer: 128 units with return sequences
-   - Second LSTM layer: 64 units with return sequences
-   - Both layers include BatchNormalization and L2 regularization
+2. Parallel LSTM Branch
+   - First Bidirectional LSTM layer: 128 units with return sequences
+   - Batch Normalization
+   - Second Bidirectional LSTM layer: 64 units with return sequences
+   - Batch Normalization
 
-3. GRU Layers
-   - First GRU layer: 64 units with return sequences
-   - Second GRU layer: 32 units without return sequences
-   - Both layers include BatchNormalization and L2 regularization
+3. Parallel GRU Branch
+   - First Bidirectional GRU layer: 128 units with return sequences
+   - Batch Normalization
+   - Second Bidirectional GRU layer: 64 units with return sequences
+   - Batch Normalization
 
-4. Dense Layers
+4. Attention Mechanism
+   - Attention layer combining LSTM and GRU outputs
+
+5. Feature Fusion
+   - Concatenation of LSTM, GRU, and attention outputs
+
+6. Final Processing
+   - GRU layer: 64 units without return sequences
+   - Batch Normalization
+   - Dense layer: 128 units with ReLU activation
+   - Batch Normalization
+   - Dropout (0.4)
    - Dense layer: 64 units with ReLU activation
-   - Dropout layer: 0.3 dropout rate
-   - Output layer: 12 units with softmax activation (one for each accident type)
+   - Batch Normalization
+   - Dropout (0.3)
+   - Output layer: num_classes units with softmax activation
 
 ### Regularization Techniques
-- L2 regularization (0.01) on all layers
 - Batch Normalization after each recurrent layer
-- Dropout (0.3) before the final layer
+- Dropout (0.4 and 0.3) in dense layers
+- Attention mechanism for feature importance
 
 ## Training Process
 
 ### Data Preparation
 1. Data Loading
-   - Loads preprocessed data from NPPAD_for_classifiers
+   - Loads preprocessed data
    - Converts labels to one-hot encoding
-   - Splits data into train (70%), validation (15%), and test (15%) sets
+   - Splits data into train, validation, and test sets
 
 2. Data Normalization
    - Standard scaling of features
@@ -43,14 +57,14 @@ This document describes the implementation of the Hybrid LSTM+GRU model for nucl
 ### Training Configuration
 - Batch size: 32
 - Maximum epochs: 100
-- Optimizer: Adam with learning rate 0.001
+- Optimizer: Adam with learning rate 0.0005
 - Loss function: Categorical Crossentropy
 - Metrics: Accuracy
 
 ### Callbacks
 1. Early Stopping
    - Monitors validation loss
-   - Patience: 10 epochs
+   - Patience: 15 epochs
    - Restores best weights
 
 2. Model Checkpoint
@@ -60,8 +74,17 @@ This document describes the implementation of the Hybrid LSTM+GRU model for nucl
 3. ReduceLROnPlateau
    - Reduces learning rate when validation loss plateaus
    - Factor: 0.2
-   - Patience: 5 epochs
+   - Patience: 7 epochs
    - Minimum learning rate: 0.00001
+
+4. TensorBoard
+   - Logs training metrics and model architecture
+   - Enables visualization of training progress
+
+### Class Imbalance Handling
+- Implements dynamic class weighting
+- Weights are calculated based on class distribution
+- Helps balance the training process for imbalanced datasets
 
 ## Model Evaluation
 - Evaluates on test set
@@ -107,6 +130,7 @@ model.load_model('path/to/load/model.h5')
   - Training progress
   - Evaluation metrics
   - Error messages (if any)
+- TensorBoard logs for visualization
 
 ## Dependencies
 - TensorFlow >= 2.8.0
@@ -118,4 +142,5 @@ model.load_model('path/to/load/model.h5')
 1. Implement data loading logic specific to NPPAD_for_classifiers
 2. Add visualization of training metrics
 3. Implement model evaluation metrics
-4. Add model interpretation tools 
+4. Add model interpretation tools
+5. Optimize hyperparameters for better performance 

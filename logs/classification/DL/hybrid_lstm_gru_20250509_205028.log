@@ -1,0 +1,489 @@
+2025-05-09 20:50:28,447 - INFO - Loading preprocessed data
+2025-05-09 20:50:29,865 - INFO - Data loaded: 1211 samples with shape (100, 96) features
+2025-05-09 20:50:29,865 - INFO - Number of classes: 12
+2025-05-09 20:50:29,868 - INFO - 
+Starting 5-fold Cross-validation Training
+2025-05-09 20:50:29,868 - INFO - Total samples: 1211
+2025-05-09 20:50:29,868 - INFO - Features shape: (100, 96)
+2025-05-09 20:50:29,868 - INFO - 
+==================================================
+2025-05-09 20:50:29,868 - INFO - Training Fold 1/5
+2025-05-09 20:50:29,868 - INFO - Training samples: 968
+2025-05-09 20:50:29,868 - INFO - Validation samples: 243
+2025-05-09 20:50:29,868 - INFO - ==================================================
+
+2025-05-09 20:50:29,947 - INFO - Enhanced model architecture built and compiled
+2025-05-09 20:50:29,952 - INFO - Model: "functional"
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Layer (type)                  ┃ Output Shape              ┃         Param # ┃ Connected to               ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ input_layer (InputLayer)      │ (None, 100, 96)           │               0 │ -                          │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ bidirectional (Bidirectional) │ (None, 100, 256)          │         230,400 │ input_layer[0][0]          │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ bidirectional_2               │ (None, 100, 256)          │         173,568 │ input_layer[0][0]          │
+│ (Bidirectional)               │                           │                 │                            │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ batch_normalization           │ (None, 100, 256)          │           1,024 │ bidirectional[0][0]        │
+│ (BatchNormalization)          │                           │                 │                            │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ batch_normalization_2         │ (None, 100, 256)          │           1,024 │ bidirectional_2[0][0]      │
+│ (BatchNormalization)          │                           │                 │                            │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ bidirectional_1               │ (None, 100, 128)          │         164,352 │ batch_normalization[0][0]  │
+│ (Bidirectional)               │                           │                 │                            │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ bidirectional_3               │ (None, 100, 128)          │         123,648 │ batch_normalization_2[0][… │
+│ (Bidirectional)               │                           │                 │                            │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ batch_normalization_1         │ (None, 100, 128)          │             512 │ bidirectional_1[0][0]      │
+│ (BatchNormalization)          │                           │                 │                            │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ batch_normalization_3         │ (None, 100, 128)          │             512 │ bidirectional_3[0][0]      │
+│ (BatchNormalization)          │                           │                 │                            │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ attention (Attention)         │ (None, 100, 128)          │               0 │ batch_normalization_1[0][… │
+│                               │                           │                 │ batch_normalization_3[0][… │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ concatenate (Concatenate)     │ (None, 100, 384)          │               0 │ batch_normalization_1[0][… │
+│                               │                           │                 │ batch_normalization_3[0][… │
+│                               │                           │                 │ attention[0][0]            │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ gru_2 (GRU)                   │ (None, 64)                │          86,400 │ concatenate[0][0]          │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ batch_normalization_4         │ (None, 64)                │             256 │ gru_2[0][0]                │
+│ (BatchNormalization)          │                           │                 │                            │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ dense (Dense)                 │ (None, 128)               │           8,320 │ batch_normalization_4[0][… │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ batch_normalization_5         │ (None, 128)               │             512 │ dense[0][0]                │
+│ (BatchNormalization)          │                           │                 │                            │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ dropout (Dropout)             │ (None, 128)               │               0 │ batch_normalization_5[0][… │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ dense_1 (Dense)               │ (None, 64)                │           8,256 │ dropout[0][0]              │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ batch_normalization_6         │ (None, 64)                │             256 │ dense_1[0][0]              │
+│ (BatchNormalization)          │                           │                 │                            │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ dropout_1 (Dropout)           │ (None, 64)                │               0 │ batch_normalization_6[0][… │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ dense_2 (Dense)               │ (None, 12)                │             780 │ dropout_1[0][0]            │
+└───────────────────────────────┴───────────────────────────┴─────────────────┴────────────────────────────┘
+ Total params: 799,820 (3.05 MB)
+ Trainable params: 797,772 (3.04 MB)
+ Non-trainable params: 2,048 (8.00 KB)
+
+2025-05-09 20:50:29,953 - INFO - Model initialized with input shape: (100, 96) and 12 classes
+2025-05-09 20:50:29,953 - INFO - Calculated class weights: {0: np.float64(1.0341880341880343), 1: np.float64(1.021097046413502), 2: np.float64(1.0083333333333333), 3: np.float64(1.09009009009009), 4: np.float64(0.9603174603174603), 5: np.float64(1.0614035087719298), 6: np.float64(1.0476190476190477), 7: np.float64(0.9490196078431372), 8: np.float64(0.9490196078431372), 9: np.float64(0.9490196078431372), 10: np.float64(0.9603174603174603), 11: np.float64(0.9958847736625515)}
+2025-05-09 20:50:29,953 - INFO - Starting model training
+2025-05-09 20:50:37,895 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 20:50:41,892 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 20:50:49,478 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 20:50:57,551 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 20:51:01,813 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 20:51:09,647 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 20:51:13,559 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 20:51:25,579 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 20:51:29,565 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 20:51:50,153 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 20:53:00,321 - INFO - Model training completed
+2025-05-09 20:53:00,533 - INFO - Evaluating model on test data
+2025-05-09 20:53:00,949 - INFO - Test accuracy: 0.8642
+2025-05-09 20:53:00,949 - INFO - Test loss: 0.3157
+2025-05-09 20:53:00,949 - INFO - 
+Fold 1 Results:
+2025-05-09 20:53:00,949 - INFO - Validation Accuracy: 0.8642
+2025-05-09 20:53:00,949 - INFO - Validation Loss: 0.3157
+2025-05-09 20:53:02,200 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 20:53:02,220 - INFO - Model saved to /Users/harshtiwari/Desktop/Sem-Project/Nuclear-Accident-P-and-C/models/classification/DL/saved_models/hybrid_lstm_gru_model_fold_1_20250509_205302.h5
+2025-05-09 20:53:02,220 - INFO - 
+==================================================
+2025-05-09 20:53:02,220 - INFO - Training Fold 2/5
+2025-05-09 20:53:02,220 - INFO - Training samples: 969
+2025-05-09 20:53:02,220 - INFO - Validation samples: 242
+2025-05-09 20:53:02,220 - INFO - ==================================================
+
+2025-05-09 20:53:02,293 - INFO - Enhanced model architecture built and compiled
+2025-05-09 20:53:02,297 - INFO - Model: "functional_1"
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Layer (type)                  ┃ Output Shape              ┃         Param # ┃ Connected to               ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ input_layer_1 (InputLayer)    │ (None, 100, 96)           │               0 │ -                          │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ bidirectional_4               │ (None, 100, 256)          │         230,400 │ input_layer_1[0][0]        │
+│ (Bidirectional)               │                           │                 │                            │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ bidirectional_6               │ (None, 100, 256)          │         173,568 │ input_layer_1[0][0]        │
+│ (Bidirectional)               │                           │                 │                            │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ batch_normalization_7         │ (None, 100, 256)          │           1,024 │ bidirectional_4[0][0]      │
+│ (BatchNormalization)          │                           │                 │                            │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ batch_normalization_9         │ (None, 100, 256)          │           1,024 │ bidirectional_6[0][0]      │
+│ (BatchNormalization)          │                           │                 │                            │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ bidirectional_5               │ (None, 100, 128)          │         164,352 │ batch_normalization_7[0][… │
+│ (Bidirectional)               │                           │                 │                            │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ bidirectional_7               │ (None, 100, 128)          │         123,648 │ batch_normalization_9[0][… │
+│ (Bidirectional)               │                           │                 │                            │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ batch_normalization_8         │ (None, 100, 128)          │             512 │ bidirectional_5[0][0]      │
+│ (BatchNormalization)          │                           │                 │                            │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ batch_normalization_10        │ (None, 100, 128)          │             512 │ bidirectional_7[0][0]      │
+│ (BatchNormalization)          │                           │                 │                            │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ attention_1 (Attention)       │ (None, 100, 128)          │               0 │ batch_normalization_8[0][… │
+│                               │                           │                 │ batch_normalization_10[0]… │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ concatenate_1 (Concatenate)   │ (None, 100, 384)          │               0 │ batch_normalization_8[0][… │
+│                               │                           │                 │ batch_normalization_10[0]… │
+│                               │                           │                 │ attention_1[0][0]          │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ gru_5 (GRU)                   │ (None, 64)                │          86,400 │ concatenate_1[0][0]        │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ batch_normalization_11        │ (None, 64)                │             256 │ gru_5[0][0]                │
+│ (BatchNormalization)          │                           │                 │                            │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ dense_3 (Dense)               │ (None, 128)               │           8,320 │ batch_normalization_11[0]… │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ batch_normalization_12        │ (None, 128)               │             512 │ dense_3[0][0]              │
+│ (BatchNormalization)          │                           │                 │                            │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ dropout_2 (Dropout)           │ (None, 128)               │               0 │ batch_normalization_12[0]… │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ dense_4 (Dense)               │ (None, 64)                │           8,256 │ dropout_2[0][0]            │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ batch_normalization_13        │ (None, 64)                │             256 │ dense_4[0][0]              │
+│ (BatchNormalization)          │                           │                 │                            │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ dropout_3 (Dropout)           │ (None, 64)                │               0 │ batch_normalization_13[0]… │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ dense_5 (Dense)               │ (None, 12)                │             780 │ dropout_3[0][0]            │
+└───────────────────────────────┴───────────────────────────┴─────────────────┴────────────────────────────┘
+ Total params: 799,820 (3.05 MB)
+ Trainable params: 797,772 (3.04 MB)
+ Non-trainable params: 2,048 (8.00 KB)
+
+2025-05-09 20:53:02,298 - INFO - Model initialized with input shape: (100, 96) and 12 classes
+2025-05-09 20:53:02,298 - INFO - Calculated class weights: {0: np.float64(1.0221518987341771), 1: np.float64(0.9176136363636364), 2: np.float64(1.009375), 3: np.float64(0.95), 4: np.float64(1.0221518987341771), 5: np.float64(1.0221518987341771), 6: np.float64(1.0766666666666667), 7: np.float64(0.95), 8: np.float64(1.0221518987341771), 9: np.float64(0.9176136363636364), 10: np.float64(1.106164383561644), 11: np.float64(1.0221518987341771)}
+2025-05-09 20:53:02,298 - INFO - Starting model training
+2025-05-09 20:53:11,663 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 20:53:17,101 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 20:53:22,837 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 20:53:28,797 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 20:53:40,782 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 20:53:46,623 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 20:53:52,774 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 20:54:05,021 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 20:54:16,672 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 20:54:50,698 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 20:56:14,032 - INFO - Model training completed
+2025-05-09 20:56:14,131 - INFO - Evaluating model on test data
+2025-05-09 20:56:14,499 - INFO - Test accuracy: 0.8884
+2025-05-09 20:56:14,499 - INFO - Test loss: 0.3037
+2025-05-09 20:56:14,499 - INFO - 
+Fold 2 Results:
+2025-05-09 20:56:14,499 - INFO - Validation Accuracy: 0.8884
+2025-05-09 20:56:14,499 - INFO - Validation Loss: 0.3037
+2025-05-09 20:56:15,796 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 20:56:15,816 - INFO - Model saved to /Users/harshtiwari/Desktop/Sem-Project/Nuclear-Accident-P-and-C/models/classification/DL/saved_models/hybrid_lstm_gru_model_fold_2_20250509_205615.h5
+2025-05-09 20:56:15,817 - INFO - 
+==================================================
+2025-05-09 20:56:15,817 - INFO - Training Fold 3/5
+2025-05-09 20:56:15,817 - INFO - Training samples: 969
+2025-05-09 20:56:15,817 - INFO - Validation samples: 242
+2025-05-09 20:56:15,817 - INFO - ==================================================
+
+2025-05-09 20:56:15,885 - INFO - Enhanced model architecture built and compiled
+2025-05-09 20:56:15,890 - INFO - Model: "functional_2"
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Layer (type)                  ┃ Output Shape              ┃         Param # ┃ Connected to               ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ input_layer_2 (InputLayer)    │ (None, 100, 96)           │               0 │ -                          │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ bidirectional_8               │ (None, 100, 256)          │         230,400 │ input_layer_2[0][0]        │
+│ (Bidirectional)               │                           │                 │                            │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ bidirectional_10              │ (None, 100, 256)          │         173,568 │ input_layer_2[0][0]        │
+│ (Bidirectional)               │                           │                 │                            │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ batch_normalization_14        │ (None, 100, 256)          │           1,024 │ bidirectional_8[0][0]      │
+│ (BatchNormalization)          │                           │                 │                            │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ batch_normalization_16        │ (None, 100, 256)          │           1,024 │ bidirectional_10[0][0]     │
+│ (BatchNormalization)          │                           │                 │                            │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ bidirectional_9               │ (None, 100, 128)          │         164,352 │ batch_normalization_14[0]… │
+│ (Bidirectional)               │                           │                 │                            │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ bidirectional_11              │ (None, 100, 128)          │         123,648 │ batch_normalization_16[0]… │
+│ (Bidirectional)               │                           │                 │                            │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ batch_normalization_15        │ (None, 100, 128)          │             512 │ bidirectional_9[0][0]      │
+│ (BatchNormalization)          │                           │                 │                            │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ batch_normalization_17        │ (None, 100, 128)          │             512 │ bidirectional_11[0][0]     │
+│ (BatchNormalization)          │                           │                 │                            │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ attention_2 (Attention)       │ (None, 100, 128)          │               0 │ batch_normalization_15[0]… │
+│                               │                           │                 │ batch_normalization_17[0]… │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ concatenate_2 (Concatenate)   │ (None, 100, 384)          │               0 │ batch_normalization_15[0]… │
+│                               │                           │                 │ batch_normalization_17[0]… │
+│                               │                           │                 │ attention_2[0][0]          │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ gru_8 (GRU)                   │ (None, 64)                │          86,400 │ concatenate_2[0][0]        │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ batch_normalization_18        │ (None, 64)                │             256 │ gru_8[0][0]                │
+│ (BatchNormalization)          │                           │                 │                            │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ dense_6 (Dense)               │ (None, 128)               │           8,320 │ batch_normalization_18[0]… │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ batch_normalization_19        │ (None, 128)               │             512 │ dense_6[0][0]              │
+│ (BatchNormalization)          │                           │                 │                            │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ dropout_4 (Dropout)           │ (None, 128)               │               0 │ batch_normalization_19[0]… │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ dense_7 (Dense)               │ (None, 64)                │           8,256 │ dropout_4[0][0]            │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ batch_normalization_20        │ (None, 64)                │             256 │ dense_7[0][0]              │
+│ (BatchNormalization)          │                           │                 │                            │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ dropout_5 (Dropout)           │ (None, 64)                │               0 │ batch_normalization_20[0]… │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ dense_8 (Dense)               │ (None, 12)                │             780 │ dropout_5[0][0]            │
+└───────────────────────────────┴───────────────────────────┴─────────────────┴────────────────────────────┘
+ Total params: 799,820 (3.05 MB)
+ Trainable params: 797,772 (3.04 MB)
+ Non-trainable params: 2,048 (8.00 KB)
+
+2025-05-09 20:56:15,891 - INFO - Model initialized with input shape: (100, 96) and 12 classes
+2025-05-09 20:56:15,891 - INFO - Calculated class weights: {0: np.float64(0.9847560975609756), 1: np.float64(1.009375), 2: np.float64(0.9073033707865169), 3: np.float64(1.0766666666666667), 4: np.float64(1.1215277777777777), 5: np.float64(0.9613095238095238), 6: np.float64(0.9847560975609756), 7: np.float64(1.0912162162162162), 8: np.float64(0.9281609195402298), 9: np.float64(0.9073033707865169), 10: np.float64(1.0352564102564104), 11: np.float64(1.0487012987012987)}
+2025-05-09 20:56:15,891 - INFO - Starting model training
+2025-05-09 20:56:24,653 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 20:56:29,710 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 20:56:34,779 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 20:56:39,786 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 20:56:44,827 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 20:56:55,295 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 20:57:00,397 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 20:57:10,615 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 20:57:26,096 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 20:57:57,378 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 20:58:18,437 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 20:58:23,750 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 20:59:22,224 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 21:00:42,426 - INFO - Model training completed
+2025-05-09 21:00:42,526 - INFO - Evaluating model on test data
+2025-05-09 21:00:42,879 - INFO - Test accuracy: 0.8388
+2025-05-09 21:00:42,879 - INFO - Test loss: 0.3148
+2025-05-09 21:00:42,879 - INFO - 
+Fold 3 Results:
+2025-05-09 21:00:42,879 - INFO - Validation Accuracy: 0.8388
+2025-05-09 21:00:42,879 - INFO - Validation Loss: 0.3148
+2025-05-09 21:00:43,397 - WARNING - 5 out of the last 17 calls to <function TensorFlowTrainer.make_predict_function.<locals>.one_step_on_data_distributed at 0x16de9fe20> triggered tf.function retracing. Tracing is expensive and the excessive number of tracings could be due to (1) creating @tf.function repeatedly in a loop, (2) passing tensors with different shapes, (3) passing Python objects instead of tensors. For (1), please define your @tf.function outside of the loop. For (2), @tf.function has reduce_retracing=True option that can avoid unnecessary retracing. For (3), please refer to https://www.tensorflow.org/guide/function#controlling_retracing and https://www.tensorflow.org/api_docs/python/tf/function for  more details.
+2025-05-09 21:00:44,281 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 21:00:44,307 - INFO - Model saved to /Users/harshtiwari/Desktop/Sem-Project/Nuclear-Accident-P-and-C/models/classification/DL/saved_models/hybrid_lstm_gru_model_fold_3_20250509_210044.h5
+2025-05-09 21:00:44,307 - INFO - 
+==================================================
+2025-05-09 21:00:44,307 - INFO - Training Fold 4/5
+2025-05-09 21:00:44,307 - INFO - Training samples: 969
+2025-05-09 21:00:44,307 - INFO - Validation samples: 242
+2025-05-09 21:00:44,307 - INFO - ==================================================
+
+2025-05-09 21:00:44,380 - INFO - Enhanced model architecture built and compiled
+2025-05-09 21:00:44,385 - INFO - Model: "functional_3"
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Layer (type)                  ┃ Output Shape              ┃         Param # ┃ Connected to               ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ input_layer_3 (InputLayer)    │ (None, 100, 96)           │               0 │ -                          │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ bidirectional_12              │ (None, 100, 256)          │         230,400 │ input_layer_3[0][0]        │
+│ (Bidirectional)               │                           │                 │                            │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ bidirectional_14              │ (None, 100, 256)          │         173,568 │ input_layer_3[0][0]        │
+│ (Bidirectional)               │                           │                 │                            │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ batch_normalization_21        │ (None, 100, 256)          │           1,024 │ bidirectional_12[0][0]     │
+│ (BatchNormalization)          │                           │                 │                            │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ batch_normalization_23        │ (None, 100, 256)          │           1,024 │ bidirectional_14[0][0]     │
+│ (BatchNormalization)          │                           │                 │                            │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ bidirectional_13              │ (None, 100, 128)          │         164,352 │ batch_normalization_21[0]… │
+│ (Bidirectional)               │                           │                 │                            │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ bidirectional_15              │ (None, 100, 128)          │         123,648 │ batch_normalization_23[0]… │
+│ (Bidirectional)               │                           │                 │                            │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ batch_normalization_22        │ (None, 100, 128)          │             512 │ bidirectional_13[0][0]     │
+│ (BatchNormalization)          │                           │                 │                            │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ batch_normalization_24        │ (None, 100, 128)          │             512 │ bidirectional_15[0][0]     │
+│ (BatchNormalization)          │                           │                 │                            │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ attention_3 (Attention)       │ (None, 100, 128)          │               0 │ batch_normalization_22[0]… │
+│                               │                           │                 │ batch_normalization_24[0]… │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ concatenate_3 (Concatenate)   │ (None, 100, 384)          │               0 │ batch_normalization_22[0]… │
+│                               │                           │                 │ batch_normalization_24[0]… │
+│                               │                           │                 │ attention_3[0][0]          │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ gru_11 (GRU)                  │ (None, 64)                │          86,400 │ concatenate_3[0][0]        │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ batch_normalization_25        │ (None, 64)                │             256 │ gru_11[0][0]               │
+│ (BatchNormalization)          │                           │                 │                            │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ dense_9 (Dense)               │ (None, 128)               │           8,320 │ batch_normalization_25[0]… │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ batch_normalization_26        │ (None, 128)               │             512 │ dense_9[0][0]              │
+│ (BatchNormalization)          │                           │                 │                            │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ dropout_6 (Dropout)           │ (None, 128)               │               0 │ batch_normalization_26[0]… │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ dense_10 (Dense)              │ (None, 64)                │           8,256 │ dropout_6[0][0]            │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ batch_normalization_27        │ (None, 64)                │             256 │ dense_10[0][0]             │
+│ (BatchNormalization)          │                           │                 │                            │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ dropout_7 (Dropout)           │ (None, 64)                │               0 │ batch_normalization_27[0]… │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ dense_11 (Dense)              │ (None, 12)                │             780 │ dropout_7[0][0]            │
+└───────────────────────────────┴───────────────────────────┴─────────────────┴────────────────────────────┘
+ Total params: 799,820 (3.05 MB)
+ Trainable params: 797,772 (3.04 MB)
+ Non-trainable params: 2,048 (8.00 KB)
+
+2025-05-09 21:00:44,386 - INFO - Model initialized with input shape: (100, 96) and 12 classes
+2025-05-09 21:00:44,386 - INFO - Calculated class weights: {0: np.float64(0.9728915662650602), 1: np.float64(1.0487012987012987), 2: np.float64(0.9728915662650602), 3: np.float64(0.95), 4: np.float64(0.9728915662650602), 5: np.float64(1.0221518987341771), 6: np.float64(0.9847560975609756), 7: np.float64(1.0912162162162162), 8: np.float64(1.106164383561644), 9: np.float64(0.938953488372093), 10: np.float64(0.938953488372093), 11: np.float64(1.0352564102564104)}
+2025-05-09 21:00:44,386 - INFO - Starting model training
+2025-05-09 21:00:53,539 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 21:00:58,941 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 21:01:04,364 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 21:01:09,490 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 21:01:14,588 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 21:02:07,542 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 21:02:55,611 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 21:06:10,089 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 21:06:16,808 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 21:07:21,522 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 21:08:00,386 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 21:09:18,081 - INFO - Model training completed
+2025-05-09 21:09:18,151 - INFO - Evaluating model on test data
+2025-05-09 21:09:18,431 - INFO - Test accuracy: 0.8595
+2025-05-09 21:09:18,432 - INFO - Test loss: 0.2775
+2025-05-09 21:09:18,432 - INFO - 
+Fold 4 Results:
+2025-05-09 21:09:18,432 - INFO - Validation Accuracy: 0.8595
+2025-05-09 21:09:18,432 - INFO - Validation Loss: 0.2775
+2025-05-09 21:09:18,841 - WARNING - 5 out of the last 17 calls to <function TensorFlowTrainer.make_predict_function.<locals>.one_step_on_data_distributed at 0x31f9eab60> triggered tf.function retracing. Tracing is expensive and the excessive number of tracings could be due to (1) creating @tf.function repeatedly in a loop, (2) passing tensors with different shapes, (3) passing Python objects instead of tensors. For (1), please define your @tf.function outside of the loop. For (2), @tf.function has reduce_retracing=True option that can avoid unnecessary retracing. For (3), please refer to https://www.tensorflow.org/guide/function#controlling_retracing and https://www.tensorflow.org/api_docs/python/tf/function for  more details.
+2025-05-09 21:09:19,550 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 21:09:19,568 - INFO - Model saved to /Users/harshtiwari/Desktop/Sem-Project/Nuclear-Accident-P-and-C/models/classification/DL/saved_models/hybrid_lstm_gru_model_fold_4_20250509_210919.h5
+2025-05-09 21:09:19,569 - INFO - 
+==================================================
+2025-05-09 21:09:19,569 - INFO - Training Fold 5/5
+2025-05-09 21:09:19,569 - INFO - Training samples: 969
+2025-05-09 21:09:19,569 - INFO - Validation samples: 242
+2025-05-09 21:09:19,569 - INFO - ==================================================
+
+2025-05-09 21:09:19,631 - INFO - Enhanced model architecture built and compiled
+2025-05-09 21:09:19,635 - INFO - Model: "functional_4"
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Layer (type)                  ┃ Output Shape              ┃         Param # ┃ Connected to               ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ input_layer_4 (InputLayer)    │ (None, 100, 96)           │               0 │ -                          │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ bidirectional_16              │ (None, 100, 256)          │         230,400 │ input_layer_4[0][0]        │
+│ (Bidirectional)               │                           │                 │                            │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ bidirectional_18              │ (None, 100, 256)          │         173,568 │ input_layer_4[0][0]        │
+│ (Bidirectional)               │                           │                 │                            │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ batch_normalization_28        │ (None, 100, 256)          │           1,024 │ bidirectional_16[0][0]     │
+│ (BatchNormalization)          │                           │                 │                            │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ batch_normalization_30        │ (None, 100, 256)          │           1,024 │ bidirectional_18[0][0]     │
+│ (BatchNormalization)          │                           │                 │                            │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ bidirectional_17              │ (None, 100, 128)          │         164,352 │ batch_normalization_28[0]… │
+│ (Bidirectional)               │                           │                 │                            │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ bidirectional_19              │ (None, 100, 128)          │         123,648 │ batch_normalization_30[0]… │
+│ (Bidirectional)               │                           │                 │                            │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ batch_normalization_29        │ (None, 100, 128)          │             512 │ bidirectional_17[0][0]     │
+│ (BatchNormalization)          │                           │                 │                            │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ batch_normalization_31        │ (None, 100, 128)          │             512 │ bidirectional_19[0][0]     │
+│ (BatchNormalization)          │                           │                 │                            │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ attention_4 (Attention)       │ (None, 100, 128)          │               0 │ batch_normalization_29[0]… │
+│                               │                           │                 │ batch_normalization_31[0]… │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ concatenate_4 (Concatenate)   │ (None, 100, 384)          │               0 │ batch_normalization_29[0]… │
+│                               │                           │                 │ batch_normalization_31[0]… │
+│                               │                           │                 │ attention_4[0][0]          │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ gru_14 (GRU)                  │ (None, 64)                │          86,400 │ concatenate_4[0][0]        │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ batch_normalization_32        │ (None, 64)                │             256 │ gru_14[0][0]               │
+│ (BatchNormalization)          │                           │                 │                            │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ dense_12 (Dense)              │ (None, 128)               │           8,320 │ batch_normalization_32[0]… │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ batch_normalization_33        │ (None, 128)               │             512 │ dense_12[0][0]             │
+│ (BatchNormalization)          │                           │                 │                            │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ dropout_8 (Dropout)           │ (None, 128)               │               0 │ batch_normalization_33[0]… │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ dense_13 (Dense)              │ (None, 64)                │           8,256 │ dropout_8[0][0]            │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ batch_normalization_34        │ (None, 64)                │             256 │ dense_13[0][0]             │
+│ (BatchNormalization)          │                           │                 │                            │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ dropout_9 (Dropout)           │ (None, 64)                │               0 │ batch_normalization_34[0]… │
+├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
+│ dense_14 (Dense)              │ (None, 12)                │             780 │ dropout_9[0][0]            │
+└───────────────────────────────┴───────────────────────────┴─────────────────┴────────────────────────────┘
+ Total params: 799,820 (3.05 MB)
+ Trainable params: 797,772 (3.04 MB)
+ Non-trainable params: 2,048 (8.00 KB)
+
+2025-05-09 21:09:19,635 - INFO - Model initialized with input shape: (100, 96) and 12 classes
+2025-05-09 21:09:19,636 - INFO - Calculated class weights: {0: np.float64(1.0352564102564104), 1: np.float64(1.009375), 2: np.float64(1.1875), 3: np.float64(0.9969135802469136), 4: np.float64(1.0352564102564104), 5: np.float64(0.9847560975609756), 6: np.float64(0.9613095238095238), 7: np.float64(0.9847560975609756), 8: np.float64(1.0625), 9: np.float64(0.8777173913043478), 10: np.float64(0.9728915662650602), 11: np.float64(0.95)}
+2025-05-09 21:09:19,636 - INFO - Starting model training
+2025-05-09 21:09:27,190 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 21:09:30,967 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 21:09:35,153 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 21:09:39,469 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 21:09:43,893 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 21:09:48,423 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 21:09:57,793 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 21:10:02,743 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 21:10:07,759 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 21:10:22,817 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 21:10:33,203 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 21:10:43,593 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 21:10:48,876 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 21:13:29,187 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 21:13:29,396 - INFO - Model training completed
+2025-05-09 21:13:29,489 - INFO - Evaluating model on test data
+2025-05-09 21:13:29,809 - INFO - Test accuracy: 0.8719
+2025-05-09 21:13:29,809 - INFO - Test loss: 0.3064
+2025-05-09 21:13:29,809 - INFO - 
+Fold 5 Results:
+2025-05-09 21:13:29,809 - INFO - Validation Accuracy: 0.8719
+2025-05-09 21:13:29,809 - INFO - Validation Loss: 0.3064
+2025-05-09 21:13:31,067 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 21:13:31,088 - INFO - Model saved to /Users/harshtiwari/Desktop/Sem-Project/Nuclear-Accident-P-and-C/models/classification/DL/saved_models/hybrid_lstm_gru_model_fold_5_20250509_211331.h5
+2025-05-09 21:13:31,089 - INFO - 
+==================================================
+2025-05-09 21:13:31,089 - INFO - K-fold Cross-validation Final Results:
+2025-05-09 21:13:31,089 - INFO - Mean Accuracy: 0.8646 ± 0.0162
+2025-05-09 21:13:31,089 - INFO - Individual Fold Accuracies: ['0.8642', '0.8884', '0.8388', '0.8595', '0.8719']
+2025-05-09 21:13:31,089 - INFO - ==================================================
+
+2025-05-09 21:13:31,195 - INFO - Training completed successfully

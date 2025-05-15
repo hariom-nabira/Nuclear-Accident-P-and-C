@@ -1,0 +1,55 @@
+2025-05-09 20:23:12,836 - INFO - Loading preprocessed data
+2025-05-09 20:23:14,250 - INFO - Data loaded: 1211 samples with shape (100, 96) features
+2025-05-09 20:23:14,250 - INFO - Number of classes: 12
+2025-05-09 20:23:14,263 - INFO - Data split - Train: (847, 100, 96), Val: (182, 100, 96), Test: (182, 100, 96)
+2025-05-09 20:23:14,305 - INFO - Model architecture built and compiled
+2025-05-09 20:23:14,307 - INFO - Model: "sequential"
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┓
+┃ Layer (type)                         ┃ Output Shape                ┃         Param # ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━┩
+│ lstm (LSTM)                          │ (None, 100, 128)            │         115,200 │
+├──────────────────────────────────────┼─────────────────────────────┼─────────────────┤
+│ batch_normalization                  │ (None, 100, 128)            │             512 │
+│ (BatchNormalization)                 │                             │                 │
+├──────────────────────────────────────┼─────────────────────────────┼─────────────────┤
+│ lstm_1 (LSTM)                        │ (None, 100, 64)             │          49,408 │
+├──────────────────────────────────────┼─────────────────────────────┼─────────────────┤
+│ batch_normalization_1                │ (None, 100, 64)             │             256 │
+│ (BatchNormalization)                 │                             │                 │
+├──────────────────────────────────────┼─────────────────────────────┼─────────────────┤
+│ gru (GRU)                            │ (None, 100, 64)             │          24,960 │
+├──────────────────────────────────────┼─────────────────────────────┼─────────────────┤
+│ batch_normalization_2                │ (None, 100, 64)             │             256 │
+│ (BatchNormalization)                 │                             │                 │
+├──────────────────────────────────────┼─────────────────────────────┼─────────────────┤
+│ gru_1 (GRU)                          │ (None, 32)                  │           9,408 │
+├──────────────────────────────────────┼─────────────────────────────┼─────────────────┤
+│ batch_normalization_3                │ (None, 32)                  │             128 │
+│ (BatchNormalization)                 │                             │                 │
+├──────────────────────────────────────┼─────────────────────────────┼─────────────────┤
+│ dense (Dense)                        │ (None, 64)                  │           2,112 │
+├──────────────────────────────────────┼─────────────────────────────┼─────────────────┤
+│ dropout (Dropout)                    │ (None, 64)                  │               0 │
+├──────────────────────────────────────┼─────────────────────────────┼─────────────────┤
+│ dense_1 (Dense)                      │ (None, 12)                  │             780 │
+└──────────────────────────────────────┴─────────────────────────────┴─────────────────┘
+ Total params: 203,020 (793.05 KB)
+ Trainable params: 202,444 (790.80 KB)
+ Non-trainable params: 576 (2.25 KB)
+
+2025-05-09 20:23:14,308 - INFO - Model initialized with input shape: (100, 96) and 12 classes
+2025-05-09 20:23:14,308 - INFO - Starting model training
+2025-05-09 20:23:18,412 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 20:23:20,119 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 20:23:21,852 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 20:23:23,740 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 20:23:29,192 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 20:23:30,917 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 20:23:36,230 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 20:24:44,334 - INFO - Model training completed
+2025-05-09 20:24:44,526 - INFO - Evaluating model on test data
+2025-05-09 20:24:44,697 - INFO - Test accuracy: 0.8681
+2025-05-09 20:24:44,697 - INFO - Test loss: 0.5141
+2025-05-09 20:24:45,310 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-05-09 20:24:45,319 - INFO - Model saved to /Users/harshtiwari/Desktop/Sem-Project/Nuclear-Accident-P-and-C/models/classification/DL/saved_models/hybrid_lstm_gru_model_20250509_202445.h5
+2025-05-09 20:24:45,320 - INFO - Training completed successfully

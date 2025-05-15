@@ -1,0 +1,183 @@
+2025-05-09 15:27:18,978 - INFO - Loading data for accident type: SLBOC
+2025-05-09 15:27:20,318 - INFO - Loading data for accident type: LLB
+2025-05-09 15:27:21,824 - INFO - Loading data for accident type: FLB
+2025-05-09 15:27:22,212 - INFO - Loading data for accident type: RI
+2025-05-09 15:27:22,665 - INFO - Loading data for accident type: LOCAC
+2025-05-09 15:27:23,006 - INFO - Loading data for accident type: SLBIC
+2025-05-09 15:27:23,645 - INFO - Loading data for accident type: SGATR
+2025-05-09 15:27:24,727 - INFO - Loading data for accident type: MD
+2025-05-09 15:27:26,214 - INFO - Loading data for accident type: LR
+2025-05-09 15:27:27,785 - INFO - Loading data for accident type: SGBTR
+2025-05-09 15:27:28,887 - INFO - Loading data for accident type: LOCA
+2025-05-09 15:27:29,221 - INFO - Loading data for accident type: RW
+2025-05-09 15:27:29,538 - INFO - Class mapping: {np.str_('FLB'): np.int64(0), np.str_('LLB'): np.int64(1), np.str_('LOCA'): np.int64(2), np.str_('LOCAC'): np.int64(3), np.str_('LR'): np.int64(4), np.str_('MD'): np.int64(5), np.str_('RI'): np.int64(6), np.str_('RW'): np.int64(7), np.str_('SGATR'): np.int64(8), np.str_('SGBTR'): np.int64(9), np.str_('SLBIC'): np.int64(10), np.str_('SLBOC'): np.int64(11)}
+2025-05-09 15:27:29,596 - INFO - Training random_forest...
+2025-05-09 15:27:52,118 - INFO - 
+Best parameters for random_forest:
+2025-05-09 15:27:52,118 - INFO - {'max_depth': 10, 'min_samples_leaf': 1, 'min_samples_split': 5, 'n_estimators': 100}
+2025-05-09 15:27:52,118 - INFO - 
+Test accuracy: 0.9794
+2025-05-09 15:27:52,118 - INFO - 
+Classification Report:
+2025-05-09 15:27:52,120 - INFO -               precision    recall  f1-score   support
+
+         FLB       1.00      1.00      1.00        20
+         LLB       1.00      1.00      1.00        21
+        LOCA       0.95      1.00      0.98        20
+       LOCAC       1.00      0.95      0.97        20
+          LR       1.00      1.00      1.00        20
+          MD       1.00      1.00      1.00        20
+          RI       1.00      0.80      0.89        20
+          RW       0.83      1.00      0.91        20
+       SGATR       1.00      1.00      1.00        20
+       SGBTR       1.00      1.00      1.00        22
+       SLBIC       1.00      1.00      1.00        20
+       SLBOC       1.00      1.00      1.00        20
+
+    accuracy                           0.98       243
+   macro avg       0.98      0.98      0.98       243
+weighted avg       0.98      0.98      0.98       243
+
+2025-05-09 15:27:52,120 - INFO - 
+Confusion Matrix:
+2025-05-09 15:27:52,120 - INFO - [[20  0  0  0  0  0  0  0  0  0  0  0]
+ [ 0 21  0  0  0  0  0  0  0  0  0  0]
+ [ 0  0 20  0  0  0  0  0  0  0  0  0]
+ [ 0  0  1 19  0  0  0  0  0  0  0  0]
+ [ 0  0  0  0 20  0  0  0  0  0  0  0]
+ [ 0  0  0  0  0 20  0  0  0  0  0  0]
+ [ 0  0  0  0  0  0 16  4  0  0  0  0]
+ [ 0  0  0  0  0  0  0 20  0  0  0  0]
+ [ 0  0  0  0  0  0  0  0 20  0  0  0]
+ [ 0  0  0  0  0  0  0  0  0 22  0  0]
+ [ 0  0  0  0  0  0  0  0  0  0 20  0]
+ [ 0  0  0  0  0  0  0  0  0  0  0 20]]
+2025-05-09 15:27:52,120 - INFO - Training knn...
+2025-05-09 15:27:52,831 - INFO - 
+Best parameters for knn:
+2025-05-09 15:27:52,831 - INFO - {'metric': 'euclidean', 'n_neighbors': 3, 'weights': 'distance'}
+2025-05-09 15:27:52,831 - INFO - 
+Test accuracy: 0.9712
+2025-05-09 15:27:52,831 - INFO - 
+Classification Report:
+2025-05-09 15:27:52,834 - INFO -               precision    recall  f1-score   support
+
+         FLB       1.00      1.00      1.00        20
+         LLB       1.00      1.00      1.00        21
+        LOCA       0.87      1.00      0.93        20
+       LOCAC       1.00      0.85      0.92        20
+          LR       1.00      1.00      1.00        20
+          MD       1.00      1.00      1.00        20
+          RI       1.00      0.80      0.89        20
+          RW       0.83      1.00      0.91        20
+       SGATR       1.00      1.00      1.00        20
+       SGBTR       1.00      1.00      1.00        22
+       SLBIC       1.00      1.00      1.00        20
+       SLBOC       1.00      1.00      1.00        20
+
+    accuracy                           0.97       243
+   macro avg       0.98      0.97      0.97       243
+weighted avg       0.98      0.97      0.97       243
+
+2025-05-09 15:27:52,834 - INFO - 
+Confusion Matrix:
+2025-05-09 15:27:52,834 - INFO - [[20  0  0  0  0  0  0  0  0  0  0  0]
+ [ 0 21  0  0  0  0  0  0  0  0  0  0]
+ [ 0  0 20  0  0  0  0  0  0  0  0  0]
+ [ 0  0  3 17  0  0  0  0  0  0  0  0]
+ [ 0  0  0  0 20  0  0  0  0  0  0  0]
+ [ 0  0  0  0  0 20  0  0  0  0  0  0]
+ [ 0  0  0  0  0  0 16  4  0  0  0  0]
+ [ 0  0  0  0  0  0  0 20  0  0  0  0]
+ [ 0  0  0  0  0  0  0  0 20  0  0  0]
+ [ 0  0  0  0  0  0  0  0  0 22  0  0]
+ [ 0  0  0  0  0  0  0  0  0  0 20  0]
+ [ 0  0  0  0  0  0  0  0  0  0  0 20]]
+2025-05-09 15:27:52,834 - INFO - Training xgboost...
+2025-05-09 15:31:13,703 - INFO - 
+Best parameters for xgboost:
+2025-05-09 15:31:13,703 - INFO - {'learning_rate': 0.1, 'max_depth': 3, 'n_estimators': 100, 'subsample': 0.8}
+2025-05-09 15:31:13,703 - INFO - 
+Test accuracy: 0.9753
+2025-05-09 15:31:13,703 - INFO - 
+Classification Report:
+2025-05-09 15:31:13,705 - INFO -               precision    recall  f1-score   support
+
+         FLB       1.00      1.00      1.00        20
+         LLB       1.00      1.00      1.00        21
+        LOCA       1.00      1.00      1.00        20
+       LOCAC       1.00      0.95      0.97        20
+          LR       1.00      1.00      1.00        20
+          MD       1.00      1.00      1.00        20
+          RI       0.94      0.80      0.86        20
+          RW       0.83      0.95      0.88        20
+       SGATR       1.00      1.00      1.00        20
+       SGBTR       1.00      1.00      1.00        22
+       SLBIC       0.95      1.00      0.98        20
+       SLBOC       1.00      1.00      1.00        20
+
+    accuracy                           0.98       243
+   macro avg       0.98      0.97      0.97       243
+weighted avg       0.98      0.98      0.98       243
+
+2025-05-09 15:31:13,705 - INFO - 
+Confusion Matrix:
+2025-05-09 15:31:13,705 - INFO - [[20  0  0  0  0  0  0  0  0  0  0  0]
+ [ 0 21  0  0  0  0  0  0  0  0  0  0]
+ [ 0  0 20  0  0  0  0  0  0  0  0  0]
+ [ 0  0  0 19  0  0  0  0  0  0  1  0]
+ [ 0  0  0  0 20  0  0  0  0  0  0  0]
+ [ 0  0  0  0  0 20  0  0  0  0  0  0]
+ [ 0  0  0  0  0  0 16  4  0  0  0  0]
+ [ 0  0  0  0  0  0  1 19  0  0  0  0]
+ [ 0  0  0  0  0  0  0  0 20  0  0  0]
+ [ 0  0  0  0  0  0  0  0  0 22  0  0]
+ [ 0  0  0  0  0  0  0  0  0  0 20  0]
+ [ 0  0  0  0  0  0  0  0  0  0  0 20]]
+2025-05-09 15:31:13,706 - INFO - Training svm...
+2025-05-09 15:31:23,988 - INFO - 
+Best parameters for svm:
+2025-05-09 15:31:23,988 - INFO - {'C': 1, 'gamma': 'scale', 'kernel': 'poly'}
+2025-05-09 15:31:23,989 - INFO - 
+Test accuracy: 0.9753
+2025-05-09 15:31:23,989 - INFO - 
+Classification Report:
+2025-05-09 15:31:23,991 - INFO -               precision    recall  f1-score   support
+
+         FLB       1.00      1.00      1.00        20
+         LLB       1.00      1.00      1.00        21
+        LOCA       0.91      1.00      0.95        20
+       LOCAC       1.00      0.90      0.95        20
+          LR       1.00      1.00      1.00        20
+          MD       1.00      1.00      1.00        20
+          RI       1.00      0.80      0.89        20
+          RW       0.83      1.00      0.91        20
+       SGATR       1.00      1.00      1.00        20
+       SGBTR       1.00      1.00      1.00        22
+       SLBIC       1.00      1.00      1.00        20
+       SLBOC       1.00      1.00      1.00        20
+
+    accuracy                           0.98       243
+   macro avg       0.98      0.97      0.97       243
+weighted avg       0.98      0.98      0.98       243
+
+2025-05-09 15:31:23,991 - INFO - 
+Confusion Matrix:
+2025-05-09 15:31:23,992 - INFO - [[20  0  0  0  0  0  0  0  0  0  0  0]
+ [ 0 21  0  0  0  0  0  0  0  0  0  0]
+ [ 0  0 20  0  0  0  0  0  0  0  0  0]
+ [ 0  0  2 18  0  0  0  0  0  0  0  0]
+ [ 0  0  0  0 20  0  0  0  0  0  0  0]
+ [ 0  0  0  0  0 20  0  0  0  0  0  0]
+ [ 0  0  0  0  0  0 16  4  0  0  0  0]
+ [ 0  0  0  0  0  0  0 20  0  0  0  0]
+ [ 0  0  0  0  0  0  0  0 20  0  0  0]
+ [ 0  0  0  0  0  0  0  0  0 22  0  0]
+ [ 0  0  0  0  0  0  0  0  0  0 20  0]
+ [ 0  0  0  0  0  0  0  0  0  0  0 20]]
+2025-05-09 15:31:24,005 - INFO - Saved random_forest to /Users/harshtiwari/Desktop/Sem-Project/Nuclear-Accident-P-and-C/models/classification/ML/saved_models/random_forest.joblib
+2025-05-09 15:31:24,007 - INFO - Saved knn to /Users/harshtiwari/Desktop/Sem-Project/Nuclear-Accident-P-and-C/models/classification/ML/saved_models/knn.joblib
+2025-05-09 15:31:24,011 - INFO - Saved xgboost to /Users/harshtiwari/Desktop/Sem-Project/Nuclear-Accident-P-and-C/models/classification/ML/saved_models/xgboost.joblib
+2025-05-09 15:31:24,012 - INFO - Saved svm to /Users/harshtiwari/Desktop/Sem-Project/Nuclear-Accident-P-and-C/models/classification/ML/saved_models/svm.joblib
+2025-05-09 15:31:24,012 - INFO - Saved label encoder to /Users/harshtiwari/Desktop/Sem-Project/Nuclear-Accident-P-and-C/models/classification/ML/saved_models/label_encoder.joblib
+2025-05-09 15:31:24,012 - INFO - Training completed!
